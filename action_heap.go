@@ -1,8 +1,12 @@
 package main
 
+import (
+	"container/heap"
+)
+
 type ActionQueue []Action
 
-var _ heap.Interface = ActionQueue(nil)
+var _ heap.Interface = new(ActionQueue)
 
 func (pq ActionQueue) Len() int { return len(pq) }
 
