@@ -1,4 +1,4 @@
-package main
+package client
 
 import (
 	"bufio"
@@ -11,8 +11,8 @@ import (
 )
 
 func main() {
-	REAL_SEND := false
-	f, err := os.Open("../key-secret.txt")
+	DEBUG := true
+	f, err := os.Open("key-secret.txt")
 	r := bufio.NewReader(f)
 
 	var key, secret string
@@ -38,7 +38,7 @@ func main() {
 		Class:           pkg.Standard,
 	}
 
-	if REAL_SEND == true {
+	if DEBUG == false {
 		messageResponse, _ := nexmo.SMS.Send(message)
 		fmt.Println("message response", messageResponse)
 	}
