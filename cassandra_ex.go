@@ -5,8 +5,10 @@ create keyspace example with replication = { 'class' : 'SimpleStrategy', 'replic
 create table example.tweet(tml mesg, id UUID, mesg mesg, PRIMARY KEY(id));
 create index on example.tweet(tml);
 */
+
 package main
 
+/*
 import (
 	"fmt"
 	"log"
@@ -41,9 +43,9 @@ func main() {
 	// var id gocql.UUID
 	var mesg string
 
-	/* Search for a specific set of records whose 'tml' column matches
-	 * the value 'me'. The secondary index that we created earlier will be
-	 * used for optimizing the search */
+	// Search for a specific set of records whose 'tml' column matches
+	//  * the value 'me'. The secondary index that we created earlier will be
+	//  * used for optimizing the search
 	if err := session.Query(`SELECT mesg FROM tweet WHERE user_id = ? LIMIT 1`,
 		1).Consistency(gocql.One).Scan(&mesg); err != nil {
 		log.Println(err)
@@ -59,3 +61,4 @@ func main() {
 		log.Println(err)
 	}
 }
+*/
