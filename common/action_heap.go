@@ -7,6 +7,8 @@ import (
 
 type ActionQueue []Action
 
+var _ heap.Interface = ActionQueue(nil)
+
 func (pq ActionQueue) Len() int { return len(pq) }
 
 func (pq ActionQueue) Less(i, j int) bool {

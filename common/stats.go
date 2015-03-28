@@ -1,4 +1,4 @@
-package PatientApp
+package common
 
 type SymptomReport struct {
 	Reported bool
