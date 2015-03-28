@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"strconv"
 	"time"
 
@@ -9,7 +11,12 @@ import (
 )
 
 func main() {
+	REAL_SEND := false
+	f, err := os.Open("../key-secret.txt")
+	r := bufio.NewReader(f)
 
+	var key, secret string
+	fmt.Fscanf(r, "%s %s", &key, &secret)
 	nexmo, _ := pkg.NewClientFromAPI(key, secret)
 
 	// Test if it works by retrieving your account balance
@@ -31,6 +38,8 @@ func main() {
 		Class:           pkg.Standard,
 	}
 
-	messageResponse, err := nexmo.SMS.Send(message)
-	fmt.Println("message response", messageResponse)
+	if REAL_SEND == true {
+		messageResponse, _ := nexmo.SMS.Send(message)
+		fmt.Println("message response", messageResponse)
+	}
 }
