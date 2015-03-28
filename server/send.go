@@ -31,9 +31,9 @@ func NewServer(pn string) *Server {
 
 var S Server = NewServer("12013514482")
 
-// Send an SMS, with Text to Patient
+// Send an SMS, with Text to a Person ( Patient, Clinician, Conact-Person)
 // See https://docs.nexmo.com/index.php/sms-api/send-message for details.
-func SendSMS(p common.Patient, t Text) {
+func SendSMS(p common.Person, t Text) {
 	message := &pkg.SMSMessage{
 		From:            OurPhoneNumber,
 		To:              p.Phone,

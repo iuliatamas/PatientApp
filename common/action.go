@@ -16,22 +16,23 @@ type Action interface {
 	Timeout() time.Duration // time willing to wait for response
 	Tries() int             // number of times we've contacted patient with this action
 
-	OnAnswer(s string)
+	OnAnswer(answ string, s *Server)
 	OnNoAnswer()
 
 	Canceled() bool // when prescription is updated
+
+	Patient() *Patient // patient we are acting for
 }
 
 // types that satisfy the action intrface
 type PrescriptionAction struct {
-	Type    string
 	Time    time.Time
 	Timeout time.Duration
 	Tries   int
 }
 
-func (pa *PrescriptionAction) Type() {
-	return Type
+func (pa *PrescriptionAction) Type() ActionType {
+	return Prescription
 }
 
 func (pa *PrescriptionAction) Time() {
@@ -42,15 +43,18 @@ func (pa *PrescriptionAction) Timeout() {
 	return Timeout
 }
 
-func (pa *PrescriptionAction) OnAnswer(s string) {
+func (pa *PrescriptionAction) OnAnswer(answ string, s *Server) {
 
 }
 
-func (pa *PrescriptionAction) OnNoAnswer(s string) {
+var PRESCRIPTION_ALERT = "Patient not taking medicine!"
+
+func (pa *PrescriptionAction) OnNoAnswer(s *Server) {
 	// Add same action after timeout, or contact clinician
 	if pa.Tries+1 <= MAX_TRIES {
 		// add to action queue again
 	} else {
 		// contact physicians
+		s.sendSMS(pa.Patient().Clinician(), PRESCRIPTION_ALERT)
 	}
 }
