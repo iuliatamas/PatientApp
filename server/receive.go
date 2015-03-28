@@ -10,6 +10,11 @@ import (
 	pkg "github.com/njern/gonexmo"
 )
 
+/*
+	Client receives messages on the phone
+	But we have callback to listen for
+*/
+
 type Page struct {
 	Title string
 }

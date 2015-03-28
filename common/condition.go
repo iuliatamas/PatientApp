@@ -1,12 +1,14 @@
 package main
 
 type Condition struct {
+	Id   int
 	Name string
 
 	SympProb map[Symptom]float32
 }
 
 type Symptom struct {
+	Id   int
 	Name string
 
 	// questions that can help the patient identify if they have the symptom

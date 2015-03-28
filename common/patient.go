@@ -4,6 +4,8 @@ type Person struct {
 	Name  string
 	Phone string
 	Email string
+
+	Actions []Action
 }
 
 type Patient struct {
