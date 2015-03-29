@@ -20,19 +20,20 @@ func (mq *MsgQueue) Push(msg *pkg.SMSMessage) {
 }
 
 func (mq *MsgQueue) Stream() <-chan *pkg.SMSMessage {
-	time.Sleep(1 * time.Second)
 	msgs := make(chan *pkg.SMSMessage)
 	go func() {
 		for {
+			time.Sleep(1 * time.Second)
+
 			mq.lock.Lock()
 			e := mq.Front()
 			if e == nil {
 				mq.lock.Unlock()
-				time.Sleep(500 * time.Millisecond)
 				continue
 			}
-			defer mq.lock.Unlock()
-			msgs <- mq.Remove(e).(*pkg.SMSMessage)
+			m := mq.Remove(e).(*pkg.SMSMessage)
+			mq.lock.Unlock()
+			msgs <- m
 		}
 	}()
 
