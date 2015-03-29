@@ -16,8 +16,9 @@ import (
 	WHAT: check-ins (questions)
 */
 var DEBUG bool
+var DEMO bool
 var nexmo *pkg.Client
-var S *Server = NewServer("12013514482")
+var S *Server
 
 // Send an SMS, with Text to a Person ( Patient, Clinician, Conact-Person)
 // See https://docs.nexmo.com/index.php/sms-api/send-message for details.
@@ -55,11 +56,13 @@ func init() {
 	var key, secret string
 	fmt.Fscanf(r, "%s %s", &key, &secret)
 
+	DEMO = true
 	DEBUG = true
 	nexmo, _ = pkg.NewClientFromAPI(key, secret)
 
 	// getBalance()
 
+	S = NewServer("12013514482")
 	S.CheckOnPatients()
 
 }
