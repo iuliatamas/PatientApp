@@ -12,6 +12,9 @@ type PersonInfo struct {
 	email string
 }
 
+// map from phone number to Patient
+var Patients map[string]*Patient
+
 type Patient struct {
 	PersonInfo
 	Conditions []Condition
@@ -24,6 +27,10 @@ type Patient struct {
 	DecisionTree *DecisionTree
 	// limited to one clinician for now
 	Clinician *Clinician
+}
+
+func NewPatient(phone string) *Patient {
+	return &Patient{PersonInfo: PersonInfo{phone: phone}}
 }
 
 func (p *Patient) Name() string {

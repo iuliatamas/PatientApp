@@ -4,8 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strconv"
-	"time"
 
 	pkg "github.com/njern/gonexmo"
 )
@@ -16,22 +14,27 @@ import (
 	WHAT: check-ins (questions)
 */
 var DEBUG bool
+var DEMO bool
 var nexmo *pkg.Client
-var S *Server = NewServer("12013514482")
+var S *Server
 
 // Send an SMS, with Text to a Person ( Patient, Clinician, Conact-Person)
 // See https://docs.nexmo.com/index.php/sms-api/send-message for details.
 func (s *Server) SendSMS(p Person, t string) {
+	fmt.Println("SENDING SMS TO ", p.Phone())
 	message := &pkg.SMSMessage{
-		From:            s.PhoneNumber,
-		To:              p.Phone(),
-		Type:            pkg.Text,
-		Text:            t,
-		ClientReference: "gonexmo-test " + strconv.FormatInt(time.Now().Unix(), 10),
-		Class:           pkg.Standard,
+		From: s.PhoneNumber,
+		To:   p.Phone(),
+		Type: pkg.Text,
+		Text: t,
+		// ClientReference: "gonexmo-test " + strconv.FormatInt(time.Now().Unix(), 10),
+		// Class: pkg.Standard,
+		Class: pkg.Flash,
 	}
 
 	if DEBUG == false {
+		fmt.Println("nexmo", nexmo)
+		fmt.Println("messg", message)
 		messageResponse, _ := nexmo.SMS.Send(message)
 		// TODO, check: This response confirms receiving
 		fmt.Println("message response", messageResponse)
@@ -55,11 +58,14 @@ func init() {
 	var key, secret string
 	fmt.Fscanf(r, "%s %s", &key, &secret)
 
-	DEBUG = true
+	DEMO = true
+	DEBUG = false
 	nexmo, _ = pkg.NewClientFromAPI(key, secret)
 
-	// getBalance()
+	getBalance()
+	Patients = make(map[string]*Patient)
 
+	S = NewServer("12013514482")
 	S.CheckOnPatients()
 
 }
