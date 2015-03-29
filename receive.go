@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -35,7 +36,8 @@ func main() {
 			senderID := msg.MSISDN
 
 			var p *Patient
-			if p, exist := Patients[senderID]; !exist {
+			var exist bool
+			if p, exist = Patients[senderID]; !exist || p == nil {
 				if !DEMO {
 					log.Println("Only operating in demo mode now. Exiting.")
 					return
@@ -44,18 +46,23 @@ func main() {
 				// must create new patient
 				p = NewPatient(senderID)
 				Patients[senderID] = p
+				fmt.Println("News patient:", p)
 
-				if strings.ToLower(msg.Text) != "demo" {
-					// inform of demo mode
-					S.SendSMS(p, DEMO_MODE_TEXT)
-					continue
-				} else {
-					log.Println("Demo request from", senderID)
-					S.SendSMS(p, "Thank you for the demo request")
-				}
 			}
 
-			S.ActOnResponse(p, msg.Text)
+			// DEMO
+			if strings.ToLower(msg.Text) != "demo" {
+				// inform of demo mode
+				fmt.Println("informing of demo mode")
+				S.SendSMS(p, DEMO_MODE_TEXT)
+				continue
+			} else {
+				log.Println("Demo request from", senderID)
+				S.SendSMS(p, "Thank you for the demo request")
+			}
+
+			fmt.Println("message was from", p)
+			// S.ActOnResponse(p, msg.Text)
 		}
 	}()
 
