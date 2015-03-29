@@ -17,9 +17,7 @@ type Action interface {
 	Tries() int             // number of times we've contacted patient with this action
 
 	OnAnswer(answ string, s *Server)
-	OnNoAnswer()
-
-	Canceled() bool // when prescription is updated
+	OnNoAnswer(s *Server)
 
 	Patient() *Patient // patient we are acting for
 	String() string
@@ -35,6 +33,17 @@ type PrescriptionAction struct {
 
 	patient *Patient
 	done    bool
+}
+
+func NewPA(msg string, p *Patient) *PrescriptionAction {
+	return &PrescriptionAction{
+		time.Now(),
+		1 * time.Minute,
+		3,
+		msg,
+		p,
+		false,
+	}
 }
 
 func (pa *PrescriptionAction) String() string {
@@ -55,6 +64,10 @@ func (pa *PrescriptionAction) Type() ActionType {
 
 func (pa *PrescriptionAction) Time() time.Time {
 	return pa.time
+}
+
+func (pa *PrescriptionAction) Tries() int {
+	return pa.tries
 }
 
 func (pa *PrescriptionAction) Timeout() time.Duration {

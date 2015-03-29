@@ -6,7 +6,6 @@ import "time"
 
 // each level of a decision tree has a
 type DecisionTree struct {
-	Server   Server
 	Action   Action
 	Decision map[YesNoIdk]*DecisionTree
 }
@@ -32,9 +31,12 @@ func (d *DecisionTree) Do(s *Server, resp string) *DecisionTree {
 	go func() {
 		select {
 		case <-time.After(t):
-			dnext.Action.OnNoAnswer()
+			dnext.Action.OnNoAnswer(s)
 		}
 	}()
-
 	return dnext
+}
+
+func NewDT(a Action) *DecisionTree {
+	return &DecisionTree{Action: a}
 }
