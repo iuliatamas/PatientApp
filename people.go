@@ -24,7 +24,7 @@ type Patient struct {
 	DrugUsage  map[string]TreatmentStats
 
 	// actions we have taken for the patient
-	Actions []Action
+	DecisionTree *DecisionTree
 	// limited to one clinician for now
 	Clinician *Clinician
 }

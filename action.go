@@ -22,6 +22,7 @@ type Action interface {
 	Canceled() bool // when prescription is updated
 
 	Patient() *Patient // patient we are acting for
+	String() string
 }
 
 // types that satisfy the action intrface
@@ -29,8 +30,13 @@ type PrescriptionAction struct {
 	time    time.Time
 	timeout time.Duration
 	tries   int
+	str     string
 
 	patient *Patient
+}
+
+func (pa *PrescriptionAction) String() string {
+	return pa.str
 }
 
 func (pa *PrescriptionAction) Patient() *Patient {
