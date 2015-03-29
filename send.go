@@ -18,6 +18,19 @@ var DEMO bool
 var nexmo *pkg.Client
 var S *Server
 
+func (s *Server) Run() {
+	msgs := s.MsgQueue.Stream()
+	for m := range msgs {
+		if DEBUG == false {
+			fmt.Println("nexmo", nexmo)
+			fmt.Println("messg", m)
+			mr, _ := nexmo.SMS.Send(m)
+			// TODO, check: This response confirms receiving
+			fmt.Println("message response", mr)
+		}
+	}
+}
+
 // Send an SMS, with Text to a Person ( Patient, Clinician, Conact-Person)
 // See https://docs.nexmo.com/index.php/sms-api/send-message for details.
 func (s *Server) SendSMS(p Person, t string) {
@@ -31,15 +44,7 @@ func (s *Server) SendSMS(p Person, t string) {
 		// Class: pkg.Standard,
 		Class: pkg.Flash,
 	}
-
-	if DEBUG == false {
-		fmt.Println("nexmo", nexmo)
-		fmt.Println("messg", message)
-		messageResponse, _ := nexmo.SMS.Send(message)
-		// TODO, check: This response confirms receiving
-		fmt.Println("message response", messageResponse)
-	}
-
+	s.MsgQueue.Push(message)
 }
 
 func (s *Server) CheckOnPatients() {
@@ -66,8 +71,8 @@ func init() {
 	Patients = make(map[string]*Patient)
 
 	S = NewServer("12013514482")
+	S.Run()
 	S.CheckOnPatients()
-
 }
 
 func getBalance() {
