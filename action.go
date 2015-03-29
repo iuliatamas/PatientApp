@@ -23,6 +23,7 @@ type Action interface {
 
 	Patient() *Patient // patient we are acting for
 	String() string
+	Done()
 }
 
 // types that satisfy the action intrface
@@ -33,10 +34,15 @@ type PrescriptionAction struct {
 	str     string
 
 	patient *Patient
+	done    bool
 }
 
 func (pa *PrescriptionAction) String() string {
 	return pa.str
+}
+
+func (pa *PrescriptionAction) Done() {
+	pa.done = true
 }
 
 func (pa *PrescriptionAction) Patient() *Patient {
@@ -62,7 +68,11 @@ func (pa *PrescriptionAction) OnAnswer(answ string, s *Server) {
 var PRESCRIPTION_ALERT = "Patient not taking medicine!"
 var MAX_TRIES int = 5
 
+// XXX: should return time to reschedule it
 func (pa *PrescriptionAction) OnNoAnswer(s *Server) {
+	if pa.done {
+		return
+	}
 	// Add same action after timeout, or contact clinician
 	if pa.tries+1 <= MAX_TRIES {
 		// add to action queue again
