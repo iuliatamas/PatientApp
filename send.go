@@ -35,8 +35,10 @@ func (s *Server) SendSMS(p Person, t string) {
 	if DEBUG == false {
 		fmt.Println("nexmo", nexmo)
 		fmt.Println("messg", message)
-		messageResponse, _ := nexmo.SMS.Send(message)
-		// TODO, check: This response confirms receiving
+		messageResponse, err := nexmo.SMS.Send(message)
+		if err != nil {
+			fmt.Println("error sending", err)
+		}
 		fmt.Println("message response", messageResponse)
 	}
 

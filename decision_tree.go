@@ -38,5 +38,5 @@ func (d *DecisionTree) Do(s *Server, resp string) *DecisionTree {
 }
 
 func NewDT(a Action) *DecisionTree {
-	return &DecisionTree{Action: a}
+	return &DecisionTree{Action: a, Decision: make(map[YesNoIdk]*DecisionTree, 3)}
 }

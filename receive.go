@@ -30,6 +30,7 @@ func main() {
 	go func() {
 		for {
 			msg := <-messages
+			WantDemo := strings.ToLower(msg.Text) == "demo"
 			log.Printf("%v\n", msg)
 
 			// senderID is a phone number
@@ -37,7 +38,7 @@ func main() {
 
 			var p *Patient
 			var exist bool
-			if p, exist = Patients[senderID]; !exist || p == nil {
+			if p, exist = Patients[senderID]; !exist || p == nil || WantDemo {
 				if !DEMO {
 					log.Println("Only operating in demo mode now. Exiting.")
 					return
@@ -45,24 +46,27 @@ func main() {
 
 				// must create new patient
 				p = NewPatient(senderID)
+				p.DecisionTree = NewDemoTree(p)
 				Patients[senderID] = p
 				fmt.Println("News patient:", p)
 
-			}
+				// DEMO
+				if !WantDemo {
+					// inform of demo mode
+					fmt.Println("informing of demo mode")
+					S.SendSMS(p, DEMO_MODE_TEXT)
+					continue
+				} else {
+					log.Println("Demo request from", senderID)
+					S.SendSMS(p, "Thank you for the demo request")
+					// initiate conversation
+					S.SendSMS(p, p.DecisionTree.Action.String())
 
-			// DEMO
-			if strings.ToLower(msg.Text) != "demo" {
-				// inform of demo mode
-				fmt.Println("informing of demo mode")
-				S.SendSMS(p, DEMO_MODE_TEXT)
-				continue
+				}
 			} else {
-				log.Println("Demo request from", senderID)
-				S.SendSMS(p, "Thank you for the demo request")
+				fmt.Println("Acting on respose for patient", p)
+				S.ActOnResponse(p, msg.Text)
 			}
-
-			fmt.Println("message was from", p)
-			// S.ActOnResponse(p, msg.Text)
 		}
 	}()
 
